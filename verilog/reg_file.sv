@@ -13,7 +13,7 @@ module reg_file #(parameter pw=4)(
 
   logic[7:0] core[2**pw];    // 2-dim array  8 wide  16 deep
 
-	logic[7:0] r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, rA, rB, rC, rD, rE, rX;
+	logic[7:0] r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, rA, rB, rM, rW;
 
 	assign r0 = core[4'b0000];
 	assign r1 = core[4'b0001];
@@ -22,20 +22,21 @@ module reg_file #(parameter pw=4)(
 	assign r4 = core[4'b0100];
 	assign r5 = core[4'b0101];
 	assign r6 = core[4'b0110];
-	assign r7 = core[4'b0111];
+	assign r7 = core[4'b0111];	
 	assign r8 = core[4'b1000];
 	assign r9 = core[4'b1001];
-	assign rA = core[4'b1010];
-	assign rB = core[4'b1011];
-	assign rC = core[4'b1100];
-	assign rD = core[4'b1101];
-	assign rE = core[4'b1110];
-	assign rX = core[4'b1111];
+	assign r10 = core[4'b1010];
+	assign r11 = core[4'b1011];
+	assign rA = core[4'b1100];
+	assign rB = core[4'b1101];
+	assign rM = core[4'b1110];
+	assign rW = core[4'b1111];
+	
 
 // reads are combinational
   assign datA_out = core[rd_addrA];
   assign datB_out = core[rd_addrB];
-  regMem = rX;
+  regMem = rM;
 // writes are sequential (clocked)
   always_ff @(posedge clk)
     if(wr_en)				   // anything but stores or no ops
