@@ -19,16 +19,16 @@ always_comb begin
     5'b00011: // or
       rslt = inA | inB;
     5'b00100: // xor
-      rslt = inA ^ inB;
-    5'b00101: // xor 
       rslt = ^inA;
+    5'b00101: // xor 
+      rslt = inA ^ inB; 
     3'b00110: // not
       rslt = !(inA);
     3'b01110: // <<
       rslt = inA << inB;
     5'b01111: // >>
       rslt = inA >> inB;
-    default 8'b000011111
+    default 8'b01111111
   endcase
     beq = inA == inB;
     slt  = inA <  inB;
