@@ -9,11 +9,36 @@ def convert(inFile, outFile1, outFile2):
 	labelsNum = 0;
 
 	#dictionaries to ease conversion of opcodes/operands to binary
-	opcodes = {'ADR' : '000', 'ADI' : '001', 'STR' : '010', 'LDR' : '011',
-	'MOV' : '100', 'CMP' : '101', 'BR' : '110', 'HT' : '111'}
+	opcodes = {'Add' : '000000', 'Sub' : '000001', 'And' : '000010', 'Or' : '000011',
+	'Xor' : '000100', 'RXor' : '000101', 'Not' : '000110', 'Ls' : '001000', 'Rs' : '001001', 
+ 	'Lw' : '001010', 'Sw' : '001011', 'Jump' : '010', 'Li' : '0110', 'Move' : '1', 'branchne' : '000111000',
+  	'brancheq' : '000111001', 'branchslt' : '000111010', 'branchleq' : '000111011', 'branchjp' : '000111100'}
 	registers = {'r0' : '000', 'r1' : '001', 'r2' : '010', 'r3' : '011',
-	'r4' : '100', 'r5' : '101', 'r6' : '110', 'r7' : '111'}
-	
+	'r4' : '100', 'r5' : '101', 'r6' : '110', 'r7' : '111', 'rA' : '000', 
+ 	'rB' : '001', 'rC' : '010', 'rD' : '011', 'rS' : '110', 'rM' : '111'}
+ 
+	#return register number
+	def checkReg(reg):
+		regOut = ''
+		if (reg[1] >= "0" and reg[1] <= "7"):
+			regOut += '0'
+			regOut += registers[reg]
+		elif (reg in registers):
+			regOut += '1'
+			regOut += registers[reg]
+		return regOut
+
+
+    #return immed value in bin
+	def getImmed(immed):
+		immedOut = ''
+		if (immed >= "0" and immed<= "8"):
+			immedOut += bin(int(instr[1]))[2:].zfill(5)
+		#elif
+		#TODO for other immed value that > 8, need to know what other immed is needed
+		return immedOut
+
+
 	#reads through assembly and collects labels to populate lookup table
 	lut = {}
 	for line in assembly:
@@ -33,38 +58,32 @@ def convert(inFile, outFile1, outFile2):
 		if instr[0] in opcodes:
 			output += opcodes[instr[0]]
 			del instr[0]
-			if output is '111':
-				output += '000000'
-			elif output is '100':
+			if output[:3] is '000': #for add, sub, and, or, xor, rxor, not
+				output += registers[instr[1]]
+			elif output[0] is '1':
 				#MOV
-				imm = bin(int(instr[0]))[2:]
+				reg1 = instr[1][1]
+				reg2 = instr[2][1]
+				output += checkReg(reg1)
+				output += checkReg(reg2)
 				#pad to 6 bits for the immediate
-				for i in range(0, 6-len(imm)):
-					imm = '0'+imm
-				output += imm
-			else:
-				#remove commas from register operand names and check
-				instr[0] = instr[0].replace(',', '');
-				if instr[0] in registers:
-					#ADR OR ADI
-					output += registers[instr[0]]
-					if instr[1] in registers:
-						#ADR
-						output += registers[instr[1]]
-					else:
-						#ADI
-						imm = bin(int(instr[1]))[2:] #convert to binary
-						#pad to 3 bits for immediate
-						for i in range(0, 3-len(imm)):
-							imm = '0'+imm
-						output += imm
-				else:
-					#BR
-					output += instr[0]
-					imm = bin(int(lut[instr[1]]))[2:] #convert to binary
-					for i in range(0, 5-len(imm)):
-						imm = '0'+imm
-					output += imm
+				#for i in range(0, 6-len(imm)):
+				#	imm = '0'+imm
+				#output += imm
+			elif output[:3] is '001': #lw, sw, ls, rs
+				if output[3:] is '010' or output[3:] is '011': #lw, sw
+					output += registers[instr[1]]
+				elif output[3:] is '000' or output[3:] is '001': #ls, rs
+					output += getImmed(instr[1])[1:] #only need 3 bit
+     
+			elif output[:4] is '0110': #li
+				immed = getImmed(instr[1])       #need all 5 bit
+    
+			#elif output[:3] is '010': #jump
+				#TODO for the Label
+    
+			#branch already got all 9 bit machine code
+				
 			#write binary to machine code output file
 			machine_file.write(str(output) + '\t// ' + line + '\n')
 
