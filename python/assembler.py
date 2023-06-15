@@ -12,7 +12,7 @@ def convert(inFile, outFile1, outFile2):
     opcodes = {'add' : '000000', 'sub' : '000001', 'and' : '000010', 'or' : '000011',
     'xor' : '000100', 'rxor' : '000101', 'not' : '000110', 'ls' : '001000', 'rs' : '001001', 
     'lw' : '001010', 'sw' : '001011', 'jump' : '010', 'li' : '0110', 'move' : '1', 'branch':'000111','ne' : '000',
-    'eq' : '001', 'slt' : '010', 'eq' : '011', 'jp' : '100'}
+    'eq' : '001', 'slt' : '010', 'leq' : '011', 'jp' : '100'}
     registers = {'r0' : '000', 'r1' : '001', 'r2' : '010', 'r3' : '011',
     'r4' : '100', 'r5' : '101', 'r6' : '110', 'r7' : '111', 'rA' : '000', 
     'rB' : '001', 'rC' : '010', 'rD' : '011', 'rS' : '110', 'rM' : '111'}
@@ -66,12 +66,13 @@ def convert(inFile, outFile1, outFile2):
                 output += checkReg(reg1)
                 output += checkReg(reg2)
             elif output[:3] == '001': #lw, sw, ls, rs
-                if output[3:] == '010' or output[3:] == '011': #lw, sw
+                if output[3:6] == '010' or output[3:6] == '011': #lw, sw
+                    print(instr[0],instr[1])
                     output += registers[instr[1]]
                     if instr[1] < 'r0' or instr[1] > 'r7':
                         print("incorrect register for lw, sw")
                         print(line)
-                elif output[3:] == '000' or output[3:] == '001': #ls, rs
+                elif output[3:6] == '000' or output[3:6] == '001': #ls, rs
                     output += getImmed(instr[1])[2:] #only need 3 bit
                     if instr[1] < '0' or instr[1] > '7':
                         print("incorrect number for lw, sw")
@@ -109,6 +110,38 @@ def convert(inFile, outFile1, outFile2):
 #convert("stringmatch.txt", "sm_machine.txt", "sm_lut.txt")
 #convert("cordic.txt", "c_machine.txt", "c_lut.txt")
 #convert("division.txt", "d_machine.txt", "d_lut.txt")
-convert("program1NoComment.txt", "machine1No.txt", "lut.txt")
-convert("prog2NoComment.txt", "machine2No.txt", "lut.txt")
-convert("prog2NoComment.txt", "machine3No.txt", "lut.txt")
+#convert("program1NoComment.txt", "machine1No.txt", "lut.txt")
+#convert("program1NoComment.txt", "machine1.txt", "lut.txt")
+#convert("prog2NoComment.txt", "machine2No.txt", "lut.txt")
+#convert("prog3NoComment.txt", "machine3No.txt", "lut.txt")
+convert("test2.txt", "testm1.txt", "lut.txt")
+
+'''
+def check(inFile1,inFile2):
+    assembly_file1 = open(inFile1, 'r')
+    assembly_file2 = open(inFile2, 'r')
+    assembly1 = list(assembly_file1.read().split('\n'))
+    assembly2 = list(assembly_file2.read().split('\n'))
+
+    #keep track of index and file line number
+    i = 0
+    for j in range(len(assembly1)):
+        if i < len(assembly2):
+            a = assembly1[j].split()
+            b = assembly2[i].split()
+            if (len(b) == 1):
+                print(b)
+                i+=1
+                b = assembly2[i].split()
+            if a[2:] != b:
+                print(a[2:],"Not the same as", b, "here ", i )
+            i+=1
+        else:
+            print(len(assembly1))
+            print(len(assembly2))
+    assembly_file1.close()
+    assembly_file2.close()
+'''
+#check("machine1.txt","program1NoComment.txt")
+#check("machine3.txt","prog3NoComment.txt")
+#check("machine2.txt","prog2NoComment.txt")
