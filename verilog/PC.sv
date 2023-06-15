@@ -8,15 +8,14 @@ module PC #(parameter D=10)(
   input       [D-1:0] target,	// how far/where to jump
   output logic[D-1:0] prog_ctr
 );
-	wire [D-1:0] target_temp;
 
   always_ff @(posedge clk)
     if(reset)
-	    target_temp <= '0;
+	    prog_ctr <= '0;
 	  else if(absjump_en)
-	    target_temp <= target;
+	  	prog_ctr <= target;
 	  else
-	    target_temp <= prog_ctr + 'b1;
-	assign prog_ctr = target_temp;
+	  	prog_ctr <= prog_ctr + 1'b1;
+		
 
 endmodule
