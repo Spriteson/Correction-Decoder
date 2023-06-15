@@ -39,7 +39,12 @@ module Branch (
         5'b01000: address = 115;
         5'b01001: address = 132;
         5'b01010: address = 150;
-        5'b01011: address = 160;	
+        5'b01011: address = 160;
+        5'b01100: address = 4;
+        5'b01101: address = 125;
+        5'b01110: address = 149;
+        5'b01111: address = 165;
+        5'b10000: address = 179;	
         5'b10001: address = 4;	
       endcase
     case(branch_instr)
