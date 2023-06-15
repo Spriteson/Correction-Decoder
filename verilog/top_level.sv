@@ -102,6 +102,6 @@ module top_level(
     .branch      (absj)
   );
 
-  assign done = prog_ctr == 1;
+  assign done = prog_ctr == 230;
  
 endmodule
