@@ -1,0 +1,187 @@
+li		31
+move	rA rM
+li		1
+move	rB rM
+add		r0
+move	rD r0
+li 		0
+move	r0 rM
+lw		r1
+loop:
+	lw		r0
+	move	rA rM
+	rs		3
+	move	rA rS
+	ls		3
+	move	rC rS
+	move	r2 r5
+	move	rA r1
+	rs		3
+	move	rA rS
+	ls		3
+	move	rA rS
+	move	rB rC
+	branch	ne
+	jump 	a2
+	move	rA r5
+	li		1
+	move	rB rM
+	add		r5
+a2:
+	move	rA r1
+	rs		2
+	move	rA rS
+	ls		3
+	move	rA rS
+	move	rB rC
+	branch 	ne
+	jump 	a3
+	move	rA r5
+	li		1
+	move	rB rM
+	add		r5
+a3:
+	move 	rA r1
+	rs		1
+	move	rA rS
+	ls		3
+	move	rA rS
+	move	rB rC
+	branch	ne
+	jump 	a4
+	move	rA r5
+	li		1
+	move	rB rM
+	add		r5
+a4:
+	move	rA r1
+	ls		3
+	move	rA rS
+	move	rB rC
+	branch	ne
+	jump	partb
+	move	rA r5
+	li		1
+	move	rB rM
+	add		r5
+partb:
+	move	rA r5
+	move	rB r2
+	branch	eq
+	jump	c1
+	move	rA r6
+	li		1
+	move	rB rM
+	add		r6
+c1:
+	move	rA rD
+	li		31
+	move	rB rM
+	branch	eq
+	jump	end
+	move	rA r0
+	li		1
+	move	rB rM
+	add		r2
+	lw		r2
+	move	r3 rM
+	move	rA r1
+	ls		4
+	move	rB rS
+	move	rA r3
+	ls		7
+	move	rA rS
+	rs		4
+	move	rA rS
+	or		r3
+	move	rA r3
+	move	rB rC
+	branch	ne
+	jump	c2
+	move	rA r7
+	li		1
+	move	rB rM
+	add		r7
+c2:
+	move	rA r1
+	ls		5
+	move	rB rS
+	move	rA r3
+	ls		6
+	move	rA rS
+	rs		3
+	move	rA rS
+	or		r3
+	move	rA r3
+	move	rB rC
+	branch	ne
+	jump	c3
+	move	rA r7
+	li		1
+	move	rB rM
+	add		r7
+c3:
+	move	rA r1
+	ls		6
+	move	rB rS
+	move	rA r3
+	ls		5
+	move	rA rS
+	rs		2
+	move	rA rS
+	or		r3
+	move	rA r3
+	move	rB rC
+	branch	ne
+	jump	c4
+	move	rA r7
+	li		1
+	move	rB rM
+	add		r7
+c4:
+	move	rA r1
+	ls		7
+	move	rB rS
+	move	rA r3
+	ls		4
+	move	rA rS
+	rs		1
+	move	rA rS
+	or		r3
+	move	rA r3
+	move	rB rC
+	branch	ne
+	jump	count
+	move	rA r7
+	li		1
+	move	rB rM
+	add		r7
+count:
+	move	rA r0
+	li		1
+	move	rB rM
+	add		r0
+	move	rM r0
+	lw		r1
+	move	rA r0
+	move	rB rD
+	branch	ne
+	jump	loop
+end:
+	li		31
+	move	rA rM
+	li		2
+	move	rB rM
+	add		r0
+	move	rM r5
+	sw		r0
+	li		1
+	move	rB rM
+	move	rA r0
+	add		r0
+	move	rM r6
+	sw		r0
+	move	rA r0
+	add		r0
+	move	rM r7
+	sw		r0

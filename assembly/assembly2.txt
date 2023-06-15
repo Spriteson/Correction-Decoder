@@ -1,0 +1,228 @@
+li		31
+move	r0 rM
+li		30
+move	r1 rM
+loop2:
+	lw		r0
+	move	r2 rM
+	lw		r1
+	move	r3 rM
+	move	rA r2
+	rxor	r4
+	move	rA r3
+	rxor	r5
+	move	rA r4
+	move	rB r5
+	xor		r6
+	move	rC r6
+	li		31
+	move	rA rM
+	move	rB rM
+	add		r4
+	move	rA r4
+	add		r4
+	move	rA r4
+	add		r4
+	move	rA r4
+	add		r4
+	li		15
+	move	rB rM
+	move	rA r4
+	add		r4
+	move	rA r4
+	move	rB r2
+	and		r5
+	move	rB r3
+	and		r6
+	move	rA r5
+	move	rB r6
+	xor		r6
+	move	rA r7
+	move	rB r6
+	add		r7
+	move	rA rD
+	move	rB r6
+	or		r6
+	move	rD r6
+	li		31
+	move	rA rM
+	move	rB rM
+	add		r4
+	move	rA r4
+	add		r4
+	move	rA r4
+	add		r4
+	move	rA r4
+	add		r4
+	move	rA r4
+	add		r4
+	li		18
+	move	rB rM
+	move	rA r4
+	add		r4
+	move	rA r4
+	move	rB r2
+	and		r5
+	move	rB r3
+	and		r6
+	move	rA r5
+	move	rB r6
+	xor		r6
+	move	rA r7
+	move	rB r6
+	add		r7
+	move	rA r6
+	ls		1
+	move	rA rD
+	move	rB rS
+	or		r6
+	move	rD r6
+	move	rA r2
+	rs		4
+	move	rA rS
+	rxor	r4
+	move	rA r3
+	rs		4
+	move	rA rS
+	rxor	r5
+	move	rA r4
+	move	rB r5
+	xor		r6
+	move	rA r7
+	move	rB r6
+	add		r7
+	move	rA r6
+	ls		2
+	move	rA rD
+	move	rB rS
+	or		r6
+	move	rD r6
+	move	rA r2
+	rxor	r4
+	move	rA r7
+	move	rB r4
+	add		r7
+	move	rA r4
+	ls		3
+	move	rA rD
+	move	rB rS
+	or		r5
+	move	rD r5
+	li		0
+	move	rA rC
+	move	rB rM
+	branch	ne
+	jump	p0err
+	li		0
+	move	rA rD
+	move	rB rM
+	branch	eq
+	jump	out
+	li		1
+	move	rA rM
+	ls		7
+	move	r4 rS
+	branch	jp
+	jump	out
+p0err:
+	li		1
+	move	rA rM
+	ls		6
+	move	r4 rS
+	move	rA r7
+	li		1
+	move	rB rM
+	branch	leq
+	jump	out
+	li		1
+	move	r5 rM
+	move	rA rD
+	li		7
+	move	rB rM
+	branch	leq
+	jump	fixLSW
+	li		8
+	move	rB rM
+	sub		r6
+	move	rA r6
+	li		0
+	move	rB rM
+	branch	ne
+	jump	fixMSW
+fixLSW:
+	move	rA r5
+	ls		1
+	move	rA rD
+	li		1
+	move	rB rM
+	sub		r6
+	move	rA r6
+	li		0
+	move	rB rM
+	branch	ne
+	jump	fixLSW
+	move	rA r3
+	move	rB r5
+	xor		r3
+	branch	jp
+	jump	out
+fixMSW:
+	move	rA r5
+	ls		1
+	move	rA rD
+	li		1
+	move	rB rM
+	sub		r6
+	move	rA r6
+	li		0
+	move	rB rM
+	branch	ne
+	jump	fixMSW
+	move	rA r2
+	move	rB r5
+	xor		r2
+out:
+	move	rA r2
+	rs		5
+	move	rA rS
+	move	rB r4
+	or		r7
+	rs		1
+	move	rA rS
+	ls		4
+	move	rB rS
+	move	rA r3
+	rs		5
+	move	rA rS
+	ls		1
+	move	rA rS
+	or		r6
+	move	rA r3
+	ls		4
+	move	rA rS
+	rs		7
+	move	rA r6
+	move	rB rS
+	or		r6
+	li		30
+	move	rA r1
+	move	rB rM
+	sub		r5
+	move	rM r5
+	sw		r7
+	move	rA r0
+	sub		r5
+	move	rM r5
+	sw		r6
+	li		2
+	move	rA r1
+	move	rB rM
+	add		r1
+	li		30
+	move	rA rM
+	move	rB rM
+	add		r4
+	move	rA r1
+	move	rB r4
+	branch	ne
+	jump	loop2

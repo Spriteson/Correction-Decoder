@@ -1,0 +1,187 @@
+0: 2nd byte location(MSW)
+1: 1st byte location(LSW)
+2: MSW data 0 0 0 0 0 b11 b10 b9
+3: LSW data b8 b7 b6 b5 b4 b3 b2 b1
+4: 
+5: p1
+6: p2
+7: p4
+A: arithmetic, ls, rs
+B: arithmetic
+C: MSW output
+D: 
+M: lw, sw, branch, li
+S: ls, rs
+
+li	0
+move	r1 rM
+li	1
+move	r0 rM
+
+Loop:
+	lw	r0
+	move	r2 rM	// MSW data to r2
+	lw	r1
+	move	r3 rM	// LSW data to r3
+	
+	// p8
+	move	rA r2
+	rxor	r4	// ^(b11:b9) also use it for p4
+	move	rA r3 // (b8:b1)
+	rs		4	// 0000_b8 b7 b6 b5
+	move	r5 rS	// save it for output MSW
+	move	rA rS
+	rxor	r6	// ^(b8:b5)
+	move	rA r4
+	move	rB r6
+	xor		r6	// p8
+	
+	// MSW output
+	move	rA r2
+	ls		5	// b11 b10 b9 0 0 0 0 0
+	move	rB rS //(b11:b9 0 0 0 0 0)
+	move	rA r5 //(0 0 0 0 b8:b5)
+	ls		1	// 0 0 0 b8 b7 b6 b5 0
+	move	rA rS
+	or		r5	// b11 b10 b9 b8 b7 b6 b5 0
+	move	rA r5
+	move	rB r6
+	or		r5	// b11 b10 b9 b8 b7 b6 b5 p8
+	move	rC r5	// store it in rC
+	
+	// p4: b11 b10 b9 b8 b4 b3 b2
+	move	rA r3  //LSW 8-1
+	rs		1	// 0 b8 b7 b6 b5 b4 b3 b2
+	move	rA rS
+	ls		5	// b4 b3 b2 0 0 0 0 0
+	move	rA rS
+	move	rB r4 // r4 = ^(b11:b9)
+    or      r4    //   !!!!!new b4 b3 b2 0 0 0 0 r4
+    move    rA r4 // !!!!!new
+	rxor	r4    // ^(b11:b9,b4:b2) also new orig xor
+	move	rA r3
+	rs		7	// 0 0 0 0 0 0 0 b8
+	move	rA rS
+	move	rB r4
+	xor		r7	// p4
+	
+	// p2: b11 b10 b7 b6 b4 b3 b1
+	// mask LSW(b8 b7 b6 b5 _ b4 b3 b2 b1) with 0110_1101 = 109
+	move	rA r2 //MSW
+	rs		1     //000000 b11 b10
+	move	rA rS
+	rxor	r4    // ^(b11,b10)
+	li		31
+	move	rA rM //31
+	move	rB rM //31
+	add		r5	// 31+31 = 62
+	move	rA r5
+	add		r5	// 31+31+31 = 93
+	move	rA r5
+	li		16
+	move	rB rM
+	add		r5 // 31+31+31+16 = 109 01101101
+	move	rA r5
+	move	rB r3 //LSW
+	and		r5    // 0 b7 b6 0 b4 b3 0 b1
+	move	rA r5
+	rxor	r5    // ^ (b7,b6,b4,b3,b1)
+	move	rA r5 // ^ (b7,b6,b4,b3,b1)
+	move	rB r4 // ^(b11,b10)
+	xor		r6    // p2
+	
+	// p1: b11 b9 b7 b5 b4 b2 b1
+	// mask MSW(0 0 0 0 _ 0 b11 b10 b9) with 0000_0101 = 5
+	// mask LSW(b8 b7 b6 b5 _ b4 b3 b2 b1) with 0101_1011 = 91
+	move	rA r2 //MSW
+	li		5
+	move	rB rM
+	and		r4     //b11,b9
+	move	rA r4
+	rxor	r4    //^(b11,b9)
+	li		31
+	move	rA rM
+	move	rB rM
+	add		r5	// 31+31 = 62
+	move	rA r5
+	li		29
+	move	rB rM
+	add		r5	// 31+31+29 = 91
+	move	rA r3  //LSW
+	move	rB r5  //mask
+	and		r5     //(7,5,4,2,1)
+	move	rA r5
+	rxor	r5     //^(7,5,4,2,1)
+	move	rA r5
+	move	rB r4 //^(b11,b9)
+	xor		r5    //p1
+	
+	// LSW output: b4 b3 b2 p4 _ b1 p2 p1 p0
+	// p locations
+	move	rA r7 //p4
+	ls		4	// 000p4_0000
+	move	rB rS //p4
+	move	rA r6 //p2
+	ls		2	// 0000_0p200
+	move	rA rS
+	or		r7	// 000p4_0p200
+	move	rA r5 //p1
+	ls		1	// 0000_00p10
+	move	rA rS
+	move	rB r7
+	or		r7	// 000p4_0p2p10
+	move	rA r3 //LSW (8-1)
+	rs		1     //(7-1,0           !!!!!!!need to chnge rs
+	move	rA rS
+	ls		5	// b4b3b20_0000      !!!!!!!need to change ls
+	move	rA rS
+	move	rB r7  // 000p4_0p2p10
+	or		r7	// b4b3b2p4_0p2p10
+	move	rA r3
+	ls		7
+	move	rA rS
+	rs		4	// 0000_b1000
+	move	rA rS
+	move	rB r7
+	or		r7	// b4b3b2p4_b1p2p10
+	
+	// get p0
+	move	rA rC  // b11 b10 b9 b8 b7 b6 b5 p8
+	rxor	r4
+	move	rA r7 // b4b3b2p4_b1p2p10
+	rxor	r5
+	move	rA r4
+	move	rB r5
+	xor		r4	// p0
+	
+	// finish LSW output
+	move	rA r4
+	move	rB r7
+	or		r7
+	
+	// put LSW and MSW in memory
+	li		30
+	move	rA rM
+	move	rB r0   // r0=1 at first
+	add		r4	// MSW location
+	move	rM rC
+	sw		r4  //mem[31] store!
+	move	rB r1 //r1 = 0 at first
+	add		r6	// LSW location
+	move	rM r7
+	sw		r6
+	
+	// move to next memory location
+	li		2         // !!!!!new
+	move	rA rM
+	move	rB r0 //r0 = 1 at first
+	add		r0    // = 2 at first
+	move	rB r1 
+	add		r1    // rA = 1, rB = 0, 1+0 = 1
+	              //r0 updated to 2 r1 updated to 1
+	// loop
+	li		30
+	move	rA rM
+	move	rB r1
+	branch	ne	// if LSW memory location is 30, we are done
+	jump	loop
