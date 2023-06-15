@@ -67,7 +67,6 @@ def convert(inFile, outFile1, outFile2):
                 output += checkReg(reg2)
             elif output[:3] == '001': #lw, sw, ls, rs
                 if output[3:6] == '010' or output[3:6] == '011': #lw, sw
-                    print(instr[0],instr[1])
                     output += registers[instr[1]]
                     if instr[1] < 'r0' or instr[1] > 'r7':
                         print("incorrect register for lw, sw")
@@ -110,11 +109,11 @@ def convert(inFile, outFile1, outFile2):
 #convert("stringmatch.txt", "sm_machine.txt", "sm_lut.txt")
 #convert("cordic.txt", "c_machine.txt", "c_lut.txt")
 #convert("division.txt", "d_machine.txt", "d_lut.txt")
-#convert("program1NoComment.txt", "machine1No.txt", "lut.txt")
+convert("program1NoComment.txt", "machine1No.txt", "lut.txt")
 #convert("program1NoComment.txt", "machine1.txt", "lut.txt")
-#convert("prog2NoComment.txt", "machine2No.txt", "lut.txt")
-#convert("prog3NoComment.txt", "machine3No.txt", "lut.txt")
-convert("test2.txt", "testm1.txt", "lut.txt")
+convert("prog2NoComment.txt", "machine2No.txt", "lut.txt")
+convert("prog3NoComment.txt", "machine3No.txt", "lut.txt")
+#convert("test2.txt", "testm1.txt", "lut.txt")
 
 '''
 def check(inFile1,inFile2):
