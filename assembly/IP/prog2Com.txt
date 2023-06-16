@@ -214,10 +214,12 @@ p0err:
 fixLSW:
 	move	rA r5	// bit manipulator
 	ls		1	// left shift by 1
+    move    r5 rS //!!!!!new
 	move	rA rD
 	li		1
 	move	rB rM
 	sub		r6	// subtract 1 from parity data
+    move    rD r6 //!!!!!!NEW if don't update it, inf loop
 	move	rA r6
 	li		0
 	move	rB rM
@@ -233,10 +235,12 @@ fixLSW:
 fixMSW:
 	move	rA r5	// bit manipulator
 	ls		1	// left shift by 1
+    move    r5 rS //!!!!!new
 	move	rA rD
 	li		1
 	move	rB rM
 	sub		r6	// subtract 1 from parity data
+    move    rD r6 //!!!!!!NEW if don't update it, inf loop
 	move	rA r6
 	li		0
 	move	rB rM

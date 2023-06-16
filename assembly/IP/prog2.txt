@@ -163,10 +163,12 @@ p0err:
 fixLSW:
 	move	rA r5
 	ls		1
+    move    r5 rS //NEW
 	move	rA rD
 	li		1
 	move	rB rM
 	sub		r6
+    move    rD r6 //NEW
 	move	rA r6
 	li		0
 	move	rB rM
@@ -180,10 +182,12 @@ fixLSW:
 fixMSW:
 	move	rA r5
 	ls		1
+    move    r5 rS //!!!!!new
 	move	rA rD
 	li		1
 	move	rB rM
 	sub		r6
+    move    rD r6 //NEW
 	move	rA r6
 	li		0
 	move	rB rM
