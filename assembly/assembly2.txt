@@ -3,6 +3,9 @@ move	r0 rM
 li		30
 move	r1 rM
 loop2:
+    li      0
+    move    rD rM 
+    move    r7 rM 
 	lw		r0
 	move	r2 rM
 	lw		r1
@@ -34,6 +37,10 @@ loop2:
 	and		r5
 	move	rB r3
 	and		r6
+    move    rA r5   
+    rxor    r5      
+    move    rA r6   
+    rxor    r6      
 	move	rA r5
 	move	rB r6
 	xor		r6
@@ -43,7 +50,7 @@ loop2:
 	move	rA rD
 	move	rB r6
 	or		r6
-	move	rD r6
+	move	rD r6   
 	li		31
 	move	rA rM
 	move	rB rM
@@ -65,6 +72,10 @@ loop2:
 	and		r5
 	move	rB r3
 	and		r6
+    move    rA r5  
+    rxor    r5       
+    move    rA r6  
+    rxor    r6     
 	move	rA r5
 	move	rB r6
 	xor		r6
@@ -76,7 +87,7 @@ loop2:
 	move	rA rD
 	move	rB rS
 	or		r6
-	move	rD r6
+	move	rD r6  
 	move	rA r2
 	rs		4
 	move	rA rS
@@ -96,7 +107,7 @@ loop2:
 	move	rA rD
 	move	rB rS
 	or		r6
-	move	rD r6
+	move	rD r6  
 	move	rA r2
 	rxor	r4
 	move	rA r7
@@ -107,7 +118,7 @@ loop2:
 	move	rA rD
 	move	rB rS
 	or		r5
-	move	rD r5
+	move	rD r5  
 	li		0
 	move	rA rC
 	move	rB rM
@@ -152,10 +163,12 @@ p0err:
 fixLSW:
 	move	rA r5
 	ls		1
+    move    r5 rS //NEW
 	move	rA rD
 	li		1
 	move	rB rM
 	sub		r6
+    move    rD r6 //NEW
 	move	rA r6
 	li		0
 	move	rB rM
@@ -169,7 +182,8 @@ fixLSW:
 fixMSW:
 	move	rA r5
 	ls		1
-	move	rA rD
+    move    r5 rS //!!!!!new
+	move	rA r6 //NEW
 	li		1
 	move	rB rM
 	sub		r6
@@ -187,6 +201,7 @@ out:
 	move	rA rS
 	move	rB r4
 	or		r7
+    move	rA r2 //new
 	rs		1
 	move	rA rS
 	ls		4
@@ -205,24 +220,26 @@ out:
 	move	rB rS
 	or		r6
 	li		30
-	move	rA r1
 	move	rB rM
+	move	rA r1	
 	sub		r5
-	move	rM r5
-	sw		r7
-	move	rA r0
+	move	rM r6
+	sw		r5
+	move	rA r0	
 	sub		r5
-	move	rM r5
-	sw		r6
+	move	rM r7
+	sw		r5
 	li		2
 	move	rA r1
 	move	rB rM
 	add		r1
+    move    rA r0 
+    add     r0    
 	li		30
 	move	rA rM
 	move	rB rM
-	add		r4
+	add		r4	// 60
 	move	rA r1
 	move	rB r4
-	branch	ne
+	branch	ne	
 	jump	loop2
