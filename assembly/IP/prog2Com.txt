@@ -1,0 +1,300 @@
+0: 2nd byte location(MSW)
+1: 1st byte location(LSW)
+2: MSW data d11 d10 d9 d8 _ d7 d6 d5 p8
+3: LSW data d4 d3 d2 p4 _ d1 p2 p1 p0
+4: (flag bits during error correction)
+5: 
+6: 
+7: parity bit error count when checking parity bits
+A: arithmetic, ls, rs
+B: arithmetic
+C: p0 parity data
+D: p1, p2, p4, p8 parity data in the form of 0000_8421 to find which data bit has error
+M: lw, sw, branch, li
+S: ls, rs
+
+// initial location
+li		31	// load immediate 31 into rM (MSW)
+move	r0 rM	// move the memory location 31 to r0
+li		30	// load immediate 30 into rM (LSW)
+move	r1 rM	// move the memory location 30 to r1
+
+loop:
+	// get MSW and LSW
+	lw		r0	// load the memory location 31 to rM
+	move	r2 rM	// move the memory data from rM to r2
+	lw		r1	// load the memory location 30 to rM
+	move	r3 rM	// move the memory data from rM to r3
+
+	// parity bit p0
+	move	rA r2	// move MSW data to rA
+	rxor	r4	// reduction xor data stored in r4
+	move	rA r3	// move LSW data to rA
+	rxor	r5	// reduction xor data stored in r5
+	move	rA r4
+	move	rB r5
+	xor		r6
+	move	rC r6  //p0
+	
+	// parity bit p1, need masking(10101010_10101_!0!_00) !!!!new 10101000 = 168
+	// 10101010 in decimal = 170 = 31+31+31+31+31+15 since we are limited to 31 on li
+	li		31
+	move	rA rM
+	move	rB rM
+	add		r4	// 31+31
+	move	rA r4
+	add		r4	// 31+31+31
+	move	rA r4
+	add		r4	// 31+31+31+31
+	move	rA r4
+	add		r4	// 31+31+31+31+31
+	li		15
+	move	rB rM
+	move	rA r4
+	add		r4	// 31+31+31+31+31+15 = 170 checked!!!correct!!!
+	move	rA r4
+	move	rB r2	// masking MSW
+	and		r5      //11, 9, 7, 5, 
+	move	rB r3	// masking LSW
+	and		r6      //4, 2, 1, p1
+    move    rA r5      //@!!!!new
+    rxor    r5        //!!!!new, get one bit
+    move    rA r6    //!!!!new
+    rxor    r6       // !!!!new, get one bit
+	move	rA r5	// xor masked MSW and LSW  !!!
+	move	rB r6      !!!
+	xor		r6      // !!!
+	move	rA r7	// parity error bit counter
+	move	rB r6
+	add		r7
+	move	rA rD	// save the xor result to rD in position xxxx_x x x p1
+	move	rB r6
+	or		r6
+	move	rD r6   //!!!!Chcked!
+	
+	// parity bit p2, need masking(11001100_11001100)
+	// 11001100 in decimal = 204 = 31+31+31+31+31+31+18
+	li		31
+	move	rA rM
+	move	rB rM
+	add		r4	// 31+31
+	move	rA r4
+	add		r4	// 31+31+31
+	move	rA r4
+	add		r4	// 31+31+31+31
+	move	rA r4
+	add		r4	// 31+31+31+31+31
+	move	rA r4
+	add		r4	// 31+31+31+31+31+31
+	li		18
+	move	rB rM
+	move	rA r4
+	add		r4	// 31+31+31+31+31+31+18 = 204
+	move	rA r4
+	move	rB r2	// masking MSW
+	and		r5
+	move	rB r3	// masking LSW  
+	and		r6        //CHECKED!!!!
+    move    rA r5    //NEW
+    rxor    r5        //NEW
+    move    rA r6    //NEW
+    rxor    r6        //NEW
+	move	rA r5	// xor masked MSW and LSW
+	move	rB r6
+	xor		r6
+	move	rA r7	// parity error bit counter
+	move	rB r6
+	add		r7
+	move	rA r6	// save the xor result to rD in position xxxx_x x p2 p1
+	ls		1
+	move	rA rD
+	move	rB rS
+	or		r6
+	move	rD r6    //Not checked but looks correct.
+	
+	// parity bit p4, 11110000_11110000 => shift then xor
+	move	rA r2	// MSW
+	rs		4
+	move	rA rS
+	rxor	r4	// reduction xor top 4 bits
+	move	rA r3	// LSW
+	rs		4
+	move	rA rS
+	rxor	r5	// reduction xor top 4 bits
+	move	rA r4	// xor masked MSW and LSW
+	move	rB r5
+	xor		r6
+	move	rA r7	// parity error bit counter
+	move	rB r6
+	add		r7
+	move	rA r6	// save the xor result to rD in position xxxx_x p4 p2 p1
+	ls		2
+	move	rA rD
+	move	rB rS
+	or		r6
+	move	rD r6 //!!!Looks correct
+	
+	// parity bit p8, 11111111_00000000 => xor MSW
+	move	rA r2	// MSW
+	rxor	r4	// reduction xor all of MSW
+	move	rA r7	// parity error bit counter
+	move	rB r4
+	add		r7
+	move	rA r4	// save the xor result to rD in position xxxx_p8 p4 p2 p1
+	ls		3
+	move	rA rD
+	move	rB rS
+	or		r5
+	move	rD r5  //!!!checked
+	
+	
+	// check p0 value           be careful here, different between 1 error and 2 errors
+	li		0
+	move	rA rC
+	move	rB rM
+	branch	ne	// if p0 is not 0, there jump to error
+	jump	p0err
+	
+	// p0 = 0, check other parity values
+	li		0
+	move	rA rD
+	move	rB rM
+	branch	eq	// if no other parity errors, data is good
+	jump	out	// no error, return data as it is
+	
+	// if other parities have errors, there are 2 errors
+	li		1
+	move	rA rM
+	ls		7	// 1000_0000 flag bit
+	move	r4 rS
+	branch	jp	// can't do error correction, just output the value
+	jump	out
+	
+// p0 = 1
+p0err:	
+	// guaranteed 1 error
+	li		1
+	move	rA rM
+	ls		6	// 0100_0000 flag bit
+	move	r4 rS
+	
+	// check if only one or less parity is wrong
+	// it means only parity bit is wrong, no errors on data bits
+	move	rA r7
+	li		1
+	move	rB rM
+	branch	leq	// return the data as is with 01 flag bit
+	jump	out
+	
+	li		1
+	move	r5 rM	// bit manipulator for correcting specific bit, starts at 0000_0001
+	
+	// check if you have to manipulate bit in MSW or LSW
+	move	rA rD
+	li		7
+	move	rB rM
+	branch	leq	// if less than or equal to 7, we are working with data bits in LSW
+	jump	fixLSW
+	
+	// if more than 7, we are working with data bits in MSW
+	li		8
+	move	rB rM
+	sub		r6	// subtract 8 to find how many bits you have to move the manipulator to.
+	move	rA r6
+	li		0
+	move	rB rM
+	branch	ne	// while this won't ever equal to 0, for the sake of branching... it won't happen bc if p8 is the only wrong bit, then we would've caught this earlier.
+	jump	fixMSW
+	
+	
+	
+fixLSW:
+	move	rA r5	// bit manipulator
+	ls		1	// left shift by 1
+	move	rA rD
+	li		1
+	move	rB rM
+	sub		r6	// subtract 1 from parity data
+	move	rA r6
+	li		0
+	move	rB rM
+	branch	ne	// if parity data is not 0, loop to shift bit manipulator again.
+	jump	fixLSW
+	
+	move	rA r3
+	move	rB r5
+	xor		r3	// flip / correct the error bit
+	branch	jp
+	jump	out
+
+fixMSW:
+	move	rA r5	// bit manipulator
+	ls		1	// left shift by 1
+	move	rA rD
+	li		1
+	move	rB rM
+	sub		r6	// subtract 1 from parity data
+	move	rA r6
+	li		0
+	move	rB rM
+	branch	ne	// if parity data is not 0, loop to shift bit manipulator again.
+	jump	fixMSW
+	
+	move	rA r2
+	move	rB r5
+	xor		r2	// flip / correct the error bit
+
+out:
+	// move bits from original d4 d3 d2 p4 _ d1 p2 p1 p0   d11 d10 d9 d8 _ d7 d6 d5 p8
+	// 			 to the format d8 d7 d6 d5 _ d4 d3 d2 d1   f1  f0  0  0  _ 0 d11 d10 d9
+	move	rA r2	// input MSW data, getting d11:d9
+	rs		5	// 0 0 0 0 _ 0 d11 d10 d9
+	move	rA rS
+	move	rB r4
+	or		r7	// f1 f0 0 0 _ 0 d11 d10 d9 = output MSW data
+	rs		1	// getting d8:d5
+	move	rA rS
+	ls		4
+	move	rB rS	// d8 d7 d6 d5 _ 0 0 0 0
+	move	rA r3	// input LSW data, getting d4:d2
+	rs		5
+	move	rA rS
+	ls		1
+	move	rA rS
+	or		r6	// d8 d7 d6 d5 _ d4 d3 d2 0
+	move	rA r3	// input LSW data, getting d1
+	ls		4
+	move	rA rS
+	rs		7
+	move	rA r6
+	move	rB rS
+	or		r6	// d8 d7 d6 d5 _ d4 d3 d2 d1
+	
+	// store data in memory, subtract 30 from input location to get the output location
+	li		30
+	move	rB rM
+	move	rA r1	// LSW
+	sub		r5
+	move	rM r6
+	sw		r5
+	move	rA r0	// MSW
+	sub		r5
+	move	rM r7
+	sw		r5     //!!!checked!
+	
+	// loop
+	li		2
+	move	rA r1
+	move	rB rM
+	add		r1	// add 2 to previous location to get the next
+    move    rA r0 //!!!!new update MSW location
+    add     r0    //!!!!new
+	li		30
+	move	rA rM
+	move	rB rM
+	add		r4	// 60
+	move	rA r1
+	move	rB r4
+	branch	ne	// if LSW location = 60, we are done. last byte is location 59.
+	jump	loop
+	
