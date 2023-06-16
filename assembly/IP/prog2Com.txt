@@ -296,5 +296,4 @@ out:
 	move	rA r1
 	move	rB r4
 	branch	ne	// if LSW location = 60, we are done. last byte is location 59.
-	jump	loop
-	
+	jump	loop2

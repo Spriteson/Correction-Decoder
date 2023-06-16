@@ -235,4 +235,4 @@ out:
 	move	rA r1
 	move	rB r4
 	branch	ne	
-	jump	loop
+	jump	loop2
