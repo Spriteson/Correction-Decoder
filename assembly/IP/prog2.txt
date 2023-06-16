@@ -3,6 +3,9 @@ move	r0 rM
 li		30
 move	r1 rM
 loop2:
+    li      0
+    move    rD rM 
+    move    r7 rM 
 	lw		r0
 	move	r2 rM
 	lw		r1
@@ -195,6 +198,7 @@ out:
 	move	rA rS
 	move	rB r4
 	or		r7
+    move	rA r2 //new
 	rs		1
 	move	rA rS
 	ls		4

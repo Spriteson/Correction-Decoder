@@ -21,6 +21,9 @@ move	r1 rM	// move the memory location 30 to r1
 
 loop:
 	// get MSW and LSW
+    li      0    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!new
+    move    rD rM //reset xxxx_p8p4p2p1 to xxxx_xxxx new
+    move    r7 rM //reset prity bits to 0            new
 	lw		r0	// load the memory location 31 to rM
 	move	r2 rM	// move the memory data from rM to r2
 	lw		r1	// load the memory location 30 to rM
@@ -252,7 +255,10 @@ out:
 	move	rA rS
 	move	rB r4
 	or		r7	// f1 f0 0 0 _ 0 d11 d10 d9 = output MSW data
-	rs		1	// getting d8:d5
+
+    move	rA r2 // !!!!!!!!!!!!!!!!!!!!!new!!!!!!work for 0 error
+
+	rs		1	// getting d8:d5 !!!!!!!!!!!!!!!rA = 0 0 0 0 _ 0 d11 d10 d9, how do you rs 1 get d8:d5
 	move	rA rS
 	ls		4
 	move	rB rS	// d8 d7 d6 d5 _ 0 0 0 0
@@ -297,3 +303,6 @@ out:
 	move	rB r4
 	branch	ne	// if LSW location = 60, we are done. last byte is location 59.
 	jump	loop2
+
+
+/////////////rD and r7 need to be updated on each interation. reset it to 0.
