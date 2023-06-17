@@ -12,7 +12,7 @@ move	rC rS
 move	rD r0 
 li 		0	
 move	r0 rM
-lw		r1	
+lw		r0	
 move    r1 rM 
 loop:
 	move	r2 r5 
@@ -150,9 +150,9 @@ c4:
     lw      r2    //!!!
     move    r3 rM  //!!!
 	move	rA r3
-	ls		4
+	rs		4
 	move	rA rS
-	rs		1
+	ls		3
 	move	rA rS
 	or		r3
 	move	rA r3

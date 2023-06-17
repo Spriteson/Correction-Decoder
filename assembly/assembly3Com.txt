@@ -27,7 +27,7 @@ move	rC rS // save the pattern into rC
 move	rD r0 // loop counter, 32
 li 		0	// load immediate 0 into rM
 move	r0 rM // this will be the memory accessor, starting at 0
-lw		r1	// load the data from first memory location
+lw		r0	// load the data from first memory location
 move    r1 rM //!!!new
 
 loop:
@@ -152,7 +152,7 @@ c1:
 	
 c2:
 	//last 3 bits of current byte + first 2 bits of next byte
-	move	rA r1	// move current data into rA
+	move	rA r1	// move current data into rA  87654_321
 	ls		5	// current byte left shift by 5   321xx_000
 	move	rB rS	// move the shifted result into rB
 
@@ -207,7 +207,7 @@ c3:
 c4:
 	//last 2 bits of current byte + first 3 bits of next byte
 	move	rA r1	// move current data into rA
-	ls		7	// current byte left shift by 7
+	ls		7	// current byte left shift by 7 1xxxx_xxx
 	move	rB rS	// move the shifted result into rB
 
     lw      r2    //!!!
