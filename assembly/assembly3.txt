@@ -1,267 +1,197 @@
-0: memory location
-1: memory data
-2: current count for part B / 'next byte' data for part c
-3: 
-4: 
-5: part A counter
-6: part B counter
-7: part C counter
-A: arithmetic, ls, rs
-B: arithmetic
-C: pattern
-D: loop counter limit
-M: lw, sw, branch, li
-S: ls, rs
-
-li		31	// load immediate 31 into rM
+li		31	
 move	rA rM
 li		1
 move	rB rM
-add		r0	// 32
-lw		r0	// load the memory location 32 to rM??32?
-move	rA rM	// move the memory data to rA
-rs		3	// right shift rA by 3
-move	rA rS	// move the shifted result into rA
-ls		3	// left shift rA by 3
-move	rC rS // save the pattern into rC
-move	rD r0 // loop counter, 32
-li 		0	// load immediate 0 into rM
-move	r0 rM // this will be the memory accessor, starting at 0
-lw		r1	// load the data from first memory location
-move    r1 rM //!!!new
-
+add		r0	
+lw		r0	
+move	rA rM	
+rs		3	
+move	rA rS	
+ls		3	
+move	rC rS 
+move	rD r0 
+li 		0	
+move	r0 rM
+lw		r1	
+move    r1 rM 
 loop:
-	// load data in memory
-	move	r2 r5 // load current count for part A so that we can use it for part B
-	// first 5 digits (7 to 3)
-	move	rA r1 // move memory data to rA
-	rs		3	// right shift rA by 3
-	move	rA rS	// move the shifted result into rA
-	ls		3	// left shift rA by 3
-	move	rA rS	// move the shifted result into rA
-	move	rB rC // load pattern into rB for branch
-	branch	ne	// if rA != rB
-	jump 	a2	// go to a2
-	
-// if pattern match
-	move	rA r5	// move part A count to rA
-	li		1	// load immediate 1 to rM
-	move	rB rM	// move rM to rB
-	add		r5    // add 1 to the part A counter and save it back at r5
-	
+	move	r2 r5 
+	move	rA r1 
+	rs		3	
+	move	rA rS	
+	ls		3	
+	move	rA rS	
+	move	rB rC 
+	branch	ne	
+	jump 	a2	
+	move	rA r5
+	li		1
+	move	rB rM
+	add		r5
 a2:
-	// 5 digits from 2nd bit (6 to 2)
-	move	rA r1	// move memory data to rA 87xx_x3xx
-	rs		2	// right shift rA by 1        0xxxx_xxx  !!new
-	move	rA rS	// move the shited result into rA
-	ls		2	// left shift rA by 3         7654_3000  !! new
-	move	rA rS	// move the shifted result into rA
-	move	rB rC	// load pattern into rB for branch
-	branch 	ne	// if rA != rB
-	jump 	a3	// go to a3
-
-// if pattern match
-	move	rA r5	// move part A count to rA
-	li		1	// load immediate 1 to rM
-	move	rB rM	// move rM to rB
-	add		r5    // add 1 to the part A counter and save it back at r5
-	
+	move	rA r1
+	rs		2
+	move	rA rS
+	ls		3
+	move	rA rS
+	move	rB rC
+	branch 	ne
+	jump 	a3
+	move	rA r5
+	li		1
+	move	rB rM
+	add		r5
 a3:
-	// 5 digits from 3rd bit (5 to 1)
-	move 	rA r1	// move memory data to rA
-	rs		1	// right shift rA by 1 0xxx_xxx
-	move	rA rS	// move the shited result into rA
-	ls		3	// right shift rA by 3 6543_2000  5xxxx_xxx
-	move	rA rS	// move the shifted result into rA
-	move	rB rC	// load pattern into rB for branch
-	branch	ne	// if rA != rB
-	jump 	a4	// go to a4
-	
-// if pattern match
-	move	rA r5	// move part A count to rA
-	li		1	// load immediate 1 to rM
-	move	rB rM	// move rM to rB
-	add		r5	// add 1 to the part A counter and save it back at r5
-
+	move 	rA r1
+	rs		1
+	move	rA rS
+	ls		3
+	move	rA rS
+	move	rB rC
+	branch	ne
+	jump 	a4
+	move	rA r5
+	li		1
+	move	rB rM
+	add		r5
 a4:
-	// 5 digits from 4th bit (4 to 0)
-	move	rA r1	// move memory data to rA
-	ls		3	// left shift rA by 3 54321_000
-	move	rA rS	// move the shited result into rA
-	move	rB rC	// load pattern into rB for branch
-	branch	ne	// if rA != rB
-	jump	partb	// go to partb
-
-// if pattern match
-	move	rA r5	// move part A count to rA
-	li		1	// load immediate 1 to rM
-	move	rB rM	// move rM to rB
-	add		r5	// add 1 to the part A counter and save it back at r5
-	
+	move	rA r1
+	ls		3
+	move	rA rS
+	move	rB rC
+	branch	ne
+	jump	partb
+	move	rA r5
+	li		1
+	move	rB rM
+	add		r5
 partb:
-	move	rA r5	// move part A count to rA
-	move	rB r2	// move current part A count to rB
-	branch	eq	// if rA == rB
-	jump	c1	//	go to c1
-
-// if counts are different(if there is matching pattern in the byte)
-	move	rA r6	// move part B count to rA
-	li		1	// load immediate 1 to rM
-	move	rB rM	// move rM to rB
-	add		r6	// add 1 to the part B counter and save it back at r6
-	
+	move	rA r5
+	move	rB r2
+	branch	eq
+	jump	c1
+	move	rA r6
+	li		1
+	move	rB rM
+	add		r6
 c1:
-	// when at memory location 31, go to the end (there is no next byte, thus no boundary to check)
-	move	rA r0	// move the loop counter limit to rA
-	li		31	// load immediate 31 to rM
-	move	rB rM	// move rM to rB
-	branch	eq	// if rA == rB
-	jump	end	// go to end
-	
-	// get the next byte data
-	move	rA r0	// move the current byte address to rA
-	li		1	// load immediate 1 to rM
-	move	rB rM	// move rM to rB
-	add		r2	// next byte address by adding 1 to current address
-	lw		r2	// load the data for the next byte to rM
-	move	r3 rM	// move the data to r3
-	
-	//last 4 bits of current byte + 1st bit of next byte
-	move	rA r1	// move current data into rA
-	ls		4	// left shift rA by 4
-	move	rB rS	// move the shifted result into rB
-	
-	move	rA r3	// move the next byte data into rA
-	rs		7	// left shift rA by 7   !!!!change 00000_001
-	move	rA rS	// move the shifted result into rA
-	ls		3	// right shift rA by 4  !!!!change 00001_000
-	move	rA rS	// move the shifted result into rA
-	
-	or		r3	// concatenating two bytes together
-	
-	move	rA r3	// move the concatenated result to rA
-	move	rB rC	// move the pattern into rB
-	branch	ne	// if rA != rB
-	jump	c2	// go to c2
-	
-// if pattern match
-	move	rA r7	// move part C count to rA
-	li		1	// load immediate 1 to rM
-	move	rB rM	// move rM to rB
-	add		r7    // add 1 to the part C counter and save it back at r7
-	
+	move	rA r0
+	li		31
+	move	rB rM
+	branch	eq
+	jump	end
+	move	rA r0
+	li		1
+	move	rB rM
+	add		r2
+	lw		r2
+	move	r3 rM
+	move	rA r1
+	ls		4
+	move	rB rS
+	move	rA r3
+	rs		7    //new
+	move	rA rS
+	ls		3    //new
+	move	rA rS
+	or		r3
+	move	rA r3
+	move	rB rC
+	branch	ne
+	jump	c2
+	move	rA r7
+	li		1
+	move	rB rM
+	add		r7
 c2:
-	//last 3 bits of current byte + first 2 bits of next byte
-	move	rA r1	// move current data into rA
-	ls		5	// current byte left shift by 5   32187_000
-	move	rB rS	// move the shifted result into rB
-
+	move	rA r1
+	ls		5
+	move	rB rS
     lw      r2    //!!!
-    move    rM r3 //!!!
-	move	rA r3	// move the next byte data into rA
-	rs		6	// left shift rA by 6      xxxxx_x87
-	move	rA rS	// move the shifted result into rA
-	ls		3	// right shift rA by 3     xxx87_xxx
-	move	rA rS	// move the shifted result into rA
-	
-	or		r3	// concatnating two bytes together
-	
-	move	rA r3	// move the concatenated result to rA
-	move	rB rC	// move the pattern into rB
-	branch	ne	// if rA != rB
-	jump	c3	// go to c3
-	
-// if pattern match
-	move	rA r7	// move part C count to rA
-	li		1	// load immediate 1 to rM
-	move	rB rM	// move rM to rB
-	add		r7    // add 1 to the part C counter and save it back at r7
-	
+    move    r3 rM  //!!!
+	move	rA r3
+	rs		6        //
+	move	rA rS
+	ls		3        //
+	move	rA rS
+	or		r3
+	move	rA r3
+	move	rB rC
+	branch	ne
+	jump	c3
+	move	rA r7
+	li		1
+	move	rB rM
+	add		r7
 c3:
-	//last 2 bits of current byte + first 3 bits of next byte
-	move	rA r1	// move current data into rA
-	ls		6	// current byte left shift by 6     21xxx_xxx
-	move	rB rS	// move the shifted result into rB
-
+	move	rA r1
+	ls		6
+	move	rB rS
     lw      r2    //!!!
-    move    rM r3 //!!!
-	move	rA r3	// move the next byte data into rA
-	rs		5	// left shift rA by 5       xxxxx_876
-	move	rA rS	// move the shifted result into rA
-	ls		3	// right shift rA by 2      xx876_xxx
-	move	rA rS	// move the shifted result into rA
-	
-	or		r3	// concatnating two bytes together
-	
-	move	rA r3	// move the concatenated result to rA
-	move	rB rC	// move the pattern into rB
-	branch	ne	// if rA != rB
-	jump	c4	// go to c4
-	
-// if pattern match
-	move	rA r7	// move part C count to rA
-	li		1	// load immediate 1 to rM
-	move	rB rM	// move rM to rB
-	add		r7    // add 1 to the part C counter and save it back at r7
-	
+    move    r3 rM  //!!!
+	move	rA r3
+	rs		5
+	move	rA rS
+	ls		3
+	move	rA rS
+	or		r3
+	move	rA r3
+	move	rB rC
+	branch	ne
+	jump	c4
+	move	rA r7
+	li		1
+	move	rB rM
+	add		r7
 c4:
-	//last 2 bits of current byte + first 3 bits of next byte
-	move	rA r1	// move current data into rA
-	ls		7	// current byte left shift by 7
-	move	rB rS	// move the shifted result into rB
-
+	move	rA r1
+	ls		7
+	move	rB rS
     lw      r2    //!!!
-    move    rM r3 //!!!
-	move	rA r3	// move the next byte data into rA
-	rs		4	// left shift rA by 4    xxxx8_765
-	move	rA rS	// move the shifted result into rA
-	ls		3	// right shift rA by 1   x8765_xxx
-	move	rA rS	// move the shifted result into rA
-	
-	or		r3	// concatnating two bytes together
-	
-	move	rA r3	// move the concatenated result to rA
-	move	rB rC	// move the pattern into rB
-	branch	ne	// if rA != rB
-	jump	count	// go to count
-	
-// if pattern match
-	move	rA r7	// move part C count to rA
-	li		1	// load immediate 1 to rM
-	move	rB rM	// move rM to rB
-	add		r7    // add 1 to the part C counter and save it back at r7
-	
+    move    r3 rM  //!!!
+	move	rA r3
+	ls		4
+	move	rA rS
+	rs		1
+	move	rA rS
+	or		r3
+	move	rA r3
+	move	rB rC
+	branch	ne
+	jump	count
+	move	rA r7
+	li		1
+	move	rB rM
+	add		r7
 count:
-	move	rA r0	// move the current memory location to rA
-	li		1	// load immediate 1 to rM
-	move	rB rM	// move rM to rA
-	add		r0	// add 1 to the current memory location and save it in r0
+	move	rA r0
+	li		1
+	move	rB rM
+	add		r0
 	lw		r0	// load rM data to r1 !!!fix
-    move	r1 rM	//       !!!!!!fix
-	move	rA r0	// move r0 to rA
-	move	rB rD	// move loop counter rD to rB 
-	branch	ne	// if rA != rB
-	jump	loop	// go back to the top
-	
+    move	r1 rM //fix
+	move	rA r0
+	move	rB rD
+	branch	ne
+	jump	loop
 end:
-	li		31	// load immediate 31 into rM
-	move	rA rM	// move rM to rA
-	li		2	// load immediate 2 into rM
-	move	rB rM	// move rM to rB
-	add		r0	// 33 is saved in r0, which is the location for part A count
-	move	rM r5	// move part A counter to rM
-	sw		r0	// store rM into r0 memory location
-	li		1	// load immediate 1 to rM
-	move	rB rM	// move rM to rB
-	move	rA r0	// move r0 to rA
-	add		r0	// add 1 to rA and put it in r0, location for part B count
-	move	rM r6	// move part B counter to rM
-	sw		r0	// store rM into r0 memory location
-	move	rA r0	// move r0 to rA
-	add		r0	// add 1 to rA and put it in r0, location for part C count
+	li		31
+	move	rA rM
+	li		2
+	move	rB rM
+	add		r0
+	move	rM r5
+	sw		r0
+	li		1
+	move	rB rM
+	move	rA r0
+	add		r0
+	move	rM r6
+	sw		r0
+	move	rA r0
+	add		r0
     move    rA r5   //!!!!!!!!uupdate
     move    rB r7   //!!!!!!!!uupdate
     add     r7      //get r7 update from partA
-	move	rM r7	// move part C counter to rM
-	sw		r0	// store rM into r0 memory location
-	
+	move	rM r7
+	sw		r0
