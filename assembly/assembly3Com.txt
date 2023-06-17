@@ -1,1 +1,260 @@
-On Discord
+0: memory location
+1: memory data
+2: current count for part B / 'next byte' data for part c
+3: 
+4: 
+5: part A counter
+6: part B counter
+7: part C counter
+A: arithmetic, ls, rs
+B: arithmetic
+C: pattern
+D: loop counter limit
+M: lw, sw, branch, li
+S: ls, rs
+
+li		31	// load immediate 31 into rM
+move	rA rM
+li		1
+move	rB rM
+add		r0	// 32
+
+move	rD r0 // loop counter, 32
+li 		0	// load immediate 0 into rM
+move	r0 rM // this will be the memory accessor, starting at 0
+lw		r1	// load the data from first memory location
+
+loop:
+	// load data in memory
+	lw		r0	// load the memory location 32 to rM
+	move	rA rM	// move the memory data to rA
+	rs		3	// right shift rA by 3
+	move	rA rS	// move the shifted result into rA
+	ls		3	// left shift rA by 3
+	move	rC rS // save the pattern into rC
+
+	move	r2 r5 // load current count for part A so that we can use it for part B
+	
+	// first 5 digits (7 to 3)
+	move	rA r1 // move memory data to rA
+	rs		3	// right shift rA by 3
+	move	rA rS	// move the shifted result into rA
+	ls		3	// left shift rA by 3
+	move	rA rS	// move the shifted result into rA
+	move	rB rC // load pattern into rB for branch
+	branch	ne	// if rA != rB
+	jump 	a2	// go to a2
+	
+// if pattern match
+	move	rA r5	// move part A count to rA
+	li		1	// load immediate 1 to rM
+	move	rB rM	// move rM to rB
+	add		r5    // add 1 to the part A counter and save it back at r5
+	
+a2:
+	// 5 digits from 2nd bit (6 to 2)
+	move	rA r1	// move memory data to rA
+	rs		2	// right shift rA by 2
+	move	rA rS	// move the shited result into rA
+	ls		3	// left shift rA by 3
+	move	rA rS	// move the shifted result into rA
+	move	rB rC	// load pattern into rB for branch
+	branch 	ne	// if rA != rB
+	jump 	a3	// go to a3
+
+// if pattern match
+	move	rA r5	// move part A count to rA
+	li		1	// load immediate 1 to rM
+	move	rB rM	// move rM to rB
+	add		r5    // add 1 to the part A counter and save it back at r5
+	
+a3:
+	// 5 digits from 3rd bit (5 to 1)
+	move 	rA r1	// move memory data to rA
+	rs		1	// right shift rA by 1
+	move	rA rS	// move the shited result into rA
+	ls		3	// right shift rA by 3
+	move	rA rS	// move the shifted result into rA
+	move	rB rC	// load pattern into rB for branch
+	branch	ne	// if rA != rB
+	jump 	a4	// go to a3
+	
+// if pattern match
+	move	rA r5	// move part A count to rA
+	li		1	// load immediate 1 to rM
+	move	rB rM	// move rM to rB
+	add		r5	// add 1 to the part A counter and save it back at r5
+
+a4:
+	// 5 digits from 4th bit (4 to 0)
+	move	rA r1	// move memory data to rA
+	ls		3	// left shift rA by 3
+	move	rA rS	// move the shited result into rA
+	move	rB rC	// load pattern into rB for branch
+	branch	ne	// if rA != rB
+	jump	partb	// go to partb
+
+// if pattern match
+	move	rA r5	// move part A count to rA
+	li		1	// load immediate 1 to rM
+	move	rB rM	// move rM to rB
+	add		r5	// add 1 to the part A counter and save it back at r5
+	
+partb:
+	move	rA r5	// move part A count to rA
+	move	rB r2	// move current part A count to rB
+	branch	eq	// if rA == rB
+	jump	c1	//	go to c1
+
+// if counts are different(if there is matching pattern in the byte)
+	move	rA r6	// move part B count to rA
+	li		1	// load immediate 1 to rM
+	move	rB rM	// move rM to rB
+	add		r6	// add 1 to the part B counter and save it back at r6
+	
+c1:
+	// when at memory location 31, go to the end (there is no next byte, thus no boundary to check)
+	move	rA rD	// move the loop counter limit to rA
+	li		31	// load immediate 31 to rM
+	move	rB rM	// move rM to rB
+	branch	eq	// if rA == rB
+	jump	end	// go to end
+	
+	// get the next byte data
+	move	rA r0	// move the current byte address to rA
+	li		1	// load immediate 1 to rM
+	move	rB rM	// move rM to rB
+	add		r2	// next byte address by adding 1 to current address
+	lw		r2	// load the data for the next byte to rM
+	move	r3 rM	// move the data to r3
+	
+	//last 4 bits of current byte + 1st bit of next byte
+	move	rA r1	// move current data into rA
+	ls		4	// left shift rA by 4
+	move	rB rS	// move the shifted result into rB
+	
+	move	rA r3	// move the next byte data into rA
+	ls		7	// left shift rA by 7
+	move	rA rS	// move the shifted result into rA
+	rs		4	// right shift rA by 4
+	move	rA rS	// move the shifted result into rA
+	
+	or		r3	// concatenating two bytes together
+	
+	move	rA r3	// move the concatenated result to rA
+	move	rB rC	// move the pattern into rB
+	branch	ne	// if rA != rB
+	jump	c2	// go to c2
+	
+// if pattern match
+	move	rA r7	// move part C count to rA
+	li		1	// load immediate 1 to rM
+	move	rB rM	// move rM to rB
+	add		r7    // add 1 to the part C counter and save it back at r7
+	
+c2:
+	//last 3 bits of current byte + first 2 bits of next byte
+	move	rA r1	// move current data into rA
+	ls		5	// current byte left shift by 5
+	move	rB rS	// move the shifted result into rB
+	
+	move	rA r3	// move the next byte data into rA
+	ls		6	// left shift rA by 6
+	move	rA rS	// move the shifted result into rA
+	rs		3	// right shift rA by 3
+	move	rA rS	// move the shifted result into rA
+	
+	or		r3	// concatnating two bytes together
+	
+	move	rA r3	// move the concatenated result to rA
+	move	rB rC	// move the pattern into rB
+	branch	ne	// if rA != rB
+	jump	c3	// go to c3
+	
+// if pattern match
+	move	rA r7	// move part C count to rA
+	li		1	// load immediate 1 to rM
+	move	rB rM	// move rM to rB
+	add		r7    // add 1 to the part C counter and save it back at r7
+	
+c3:
+	//last 2 bits of current byte + first 3 bits of next byte
+	move	rA r1	// move current data into rA
+	ls		6	// current byte left shift by 6
+	move	rB rS	// move the shifted result into rB
+	
+	move	rA r3	// move the next byte data into rA
+	ls		5	// left shift rA by 5
+	move	rA rS	// move the shifted result into rA
+	rs		2	// right shift rA by 2
+	move	rA rS	// move the shifted result into rA
+	
+	or		r3	// concatnating two bytes together
+	
+	move	rA r3	// move the concatenated result to rA
+	move	rB rC	// move the pattern into rB
+	branch	ne	// if rA != rB
+	jump	c4	// go to c4
+	
+// if pattern match
+	move	rA r7	// move part C count to rA
+	li		1	// load immediate 1 to rM
+	move	rB rM	// move rM to rB
+	add		r7    // add 1 to the part C counter and save it back at r7
+	
+c4:
+	//last 2 bits of current byte + first 3 bits of next byte
+	move	rA r1	// move current data into rA
+	ls		7	// current byte left shift by 7
+	move	rB rS	// move the shifted result into rB
+	
+	move	rA r3	// move the next byte data into rA
+	ls		4	// left shift rA by 4
+	move	rA rS	// move the shifted result into rA
+	rs		1	// right shift rA by 1
+	move	rA rS	// move the shifted result into rA
+	
+	or		r3	// concatnating two bytes together
+	
+	move	rA r3	// move the concatenated result to rA
+	move	rB rC	// move the pattern into rB
+	branch	ne	// if rA != rB
+	jump	count	// go to count
+	
+// if pattern match
+	move	rA r7	// move part C count to rA
+	li		1	// load immediate 1 to rM
+	move	rB rM	// move rM to rB
+	add		r7    // add 1 to the part C counter and save it back at r7
+	
+count:
+	move	rA r0	// move the current memory location to rA
+	li		1	// load immediate 1 to rM
+	move	rB rM	// move rM to rA
+	add		r0	// add 1 to the current memory location and save it in r0
+	move	rM r0	// move r0 to rM
+	lw		r1	// load rM data to r1
+	move	rA r0	// move r0 to rA
+	move	rB rD	// move loop counter rD to rB
+	branch	ne	// if rA != rB
+	jump	loop	// go back to the top
+	
+end:
+	li		31	// load immediate 31 into rM
+	move	rA rM	// move rM to rA
+	li		2	// load immediate 2 into rM
+	move	rB rM	// move rM to rB
+	add		r0	// 33 is saved in r0, which is the location for part A count
+	move	rM r5	// move part A counter to rM
+	sw		r0	// store rM into r0 memory location
+	li		1	// load immediate 1 to rM
+	move	rB rM	// move rM to rB
+	move	rA r0	// move r0 to rA
+	add		r0	// add 1 to rA and put it in r0, location for part B count
+	move	rM r6	// move part B counter to rM
+	sw		r0	// store rM into r0 memory location
+	move	rA r0	// move r0 to rA
+	add		r0	// add 1 to rA and put it in r0, location for part C count
+	move	rM r7	// move part C counter to rM
+	sw		r0	// store rM into r0 memory location
+	
