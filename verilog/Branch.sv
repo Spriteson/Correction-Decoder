@@ -29,17 +29,17 @@ module Branch (
       // Runs if next instruction is not a branch instruction
       //address = {2'b00, immediate, 3'b0};
       case(immediate)
-        5'b00001: address = 9;
-        5'b00010: address = 28;
-        5'b00011: address = 40;
-        5'b00100: address = 52;
-        5'b00101: address = 62;
-        5'b00110: address = 70;
-        5'b00111: address = 98;
-        5'b01000: address = 115;
-        5'b01001: address = 132;
-        5'b01010: address = 150;
-        5'b01011: address = 160;
+        5'b00001: address = 16;
+        5'b00010: address = 29;
+        5'b00011: address = 41;
+        5'b00100: address = 53;
+        5'b00101: address = 63;
+        5'b00110: address = 71;
+        5'b00111: address = 99;
+        5'b01000: address = 118;
+        5'b01001: address = 137;
+        5'b01010: address = 156;
+        5'b01011: address = 166;
         5'b01100: address = 4;
         5'b01101: address = 136;
         5'b01110: address = 160;
