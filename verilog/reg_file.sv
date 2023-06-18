@@ -13,7 +13,7 @@ module reg_file #(parameter pw=4)(
 
   logic[7:0] core[2**pw];    // 2-dim array  8 wide  16 deep
 
-  logic[7:0] r0, r1, r2, r3, r4, r5, r6, r7, rA, rB, rC, rD,rL,rS, rM;
+  logic[7:0] r0, r1, r2, r3, r4, r5, r6, r7, rA, rB, rC, rD,rS, rM;
 
 	assign r0 = core[4'b0000];
 	assign r1 = core[4'b0001];
@@ -27,7 +27,6 @@ module reg_file #(parameter pw=4)(
 	assign rB = core[4'b1001];
 	assign rC = core[4'b1010];
 	assign rD = core[4'b1011];
-	assign rL = core[4'b1100];
 	assign rS = core[4'b1110];
 	assign rM = core[4'b1111];
 	
