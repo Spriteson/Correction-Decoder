@@ -1,4 +1,19 @@
 # 141L
+Addition: li can li 5 bit immediate value and tore is to rM
+
+move can move two register around, for exapmle: move r1 r2, it move the date from r2 to r1. 
+
+All of about programs worked!.
+
+Here is the assembly explination
+
+https://docs.google.com/document/d/1vWzL6ZFOysOb1KnS_R1THi9_WmmOyw__Pchqmo6kMr4/edit?usp=sharing
+
+Here is the video
+
+https://ucsd.zoom.us/rec/play/OJg1pJc4jP8VOTJGW_CNoUQ61fdqFDuKUHXKTmlp37NoggFeGTNcdDgN-svAIaRxIPAWki4HNqIexwn3.ysSGKx8mHFuOJIZR?canPlayFromShare=true&from=my_recording&continueMode=true&componentName=rec-play&originRequestUrl=https%3A%2F%2Fucsd.zoom.us%2Frec%2Fshare%2FvbQOb5dHHMKeRYTJNjm0DFcaZNSEAGhvLW3PkW2olbW3veVIAm1VhDTXr7yxSU4K.7UVJfo5qNCU1Ohg1
+
+password:#zu^66x.
 
 ### Program 1:
 
