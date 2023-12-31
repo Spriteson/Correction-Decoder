@@ -1,4 +1,4 @@
-# 141L
+# Correction-Decoder
 Addition: li can li 5 bit immediate value and tore is to rM
 
 move can move two register around, for exapmle: move r1 r2, it move the date from r2 to r1. 
